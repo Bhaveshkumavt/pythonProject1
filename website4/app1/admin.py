@@ -1,5 +1,5 @@
 from django.contrib import admin
-from app1.models import Notice, Profile
+from .models import Notice, Profile
 from django.contrib.admin.options import ModelAdmin
 
 # Register your models here.

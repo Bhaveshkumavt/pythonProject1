@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from app1.models import Notice, Profile
+from .models import Notice, Profile
 # from app1.forms import ProfileForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -11,7 +11,7 @@ from django.views.generic.edit import UpdateView, CreateView
 from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from app1.forms import RegistrationForm
+from .forms import RegistrationForm
 from django.views.generic import View
 from django.urls import reverse,reverse_lazy
 from django.contrib.auth import login as login_process,logout,authenticate
@@ -40,6 +40,7 @@ class HomeView(TemplateView):
     template_name = "app1/try_index.html"
 
 def home(request):
+    dat_key = request.session.items()
     return render(request, 'index.html')
 
 def login(request):
@@ -118,13 +119,27 @@ class EmailAuthBackend:
 #         pwd=request.session['password']
 #     return render(request,'login.html',{'uname':uname,'pwd':pwd})
 
+
 def user_login(request):
+    session_var = request.session.items()
+    if request.session.has_key('uname') and request.session.has_key('password'):
+        uname=request.session['uname']
+        pwd=request.session['password']
+        a1 = EmailAuthBackend
+        user = a1.authenticate(username=uname, password=pwd,
+                               backend='django.contrib.auth.backends.ModelBackend')
+        login_process(request, user, 'django.contrib.auth.backends.ModelBackend')
+        return HttpResponseRedirect(reverse_lazy('index'))
+    else:
+        return user_login1(request)
+
+def user_login1(request):
     uname=''
     pwd=''
     if(request.method=='POST'):
         username=request.POST.get('username')
         password=request.POST.get('password')
-        remind=request.POST.get('remember-me')
+        remind=request.POST.get('remember_me')
         print(remind)
         # u=User.objects.get(email=username)
         a1=EmailAuthBackend
@@ -135,18 +150,17 @@ def user_login(request):
                 if remind:
                     request.session['uname']=username
                     request.session['password']=password
-                    request.session.set_expiry(None)
-                    print(request.session.get_expiry_age())
-                return HttpResponseRedirect(reverse_lazy('index'))
+                    print(request.session.items())
+                    # request.session.set_expiry(None)
+                    # print(request.session.get_expiry_age())
+                return home(request)
             else:
                 return HttpResponse('user is not active')
         else:
             print('someone is trying to login with this username={} and password{}'.format(username,password))
             return HttpResponse('invalid username and password')
 
-    if request.session.has_key('uname') and request.session.has_key('password'):
-        uname=request.session['uname']
-        pwd=request.session['password']
+
     return render(request,'login.html',{'uname':uname,'pwd':pwd})
 
 
@@ -215,7 +229,13 @@ def user_login(request):
 
 @login_required
 def user_logout(request):
+    data_key = request.session.items()
+    uname = request.session.get('uname')
+    pwd = request.session.get('password')
     logout(request)
+    if uname and pwd:
+        request.session['uname'] = uname
+        request.session['password'] = pwd
     return render(request,'index.html')
 
 

@@ -21,7 +21,7 @@ ALLOWED_HOSTS = []
 
 # AUTH_REMEMBER_COOKIE_NAME = 'remember_token'                #for remember-me
 # AUTH_REMEMBER_COOKIE_AGE = 86400 * 28  # 4 weeks by default #for remember-me
-SESSION_COOKIE_AGE=60*60*24*30        #from ecomstore
+# SESSION_COOKIE_AGE=60*60*24*30        #from ecomstore
 
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True                      #for rememebre
 # Application definition
@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'app1',
     'registration',
-    'crispy_forms',
+    # 'crispy_forms',
     'allauth',
     'allauth.account',
 ]                           #'auth_remember'

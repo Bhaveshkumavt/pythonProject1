@@ -3,7 +3,7 @@ from django.urls import path
 from django.urls.conf import include
 from django.conf import settings
 from django.views.generic.base import RedirectView
-from app1 import views
+from . import views
 from django.contrib.auth import views as auth_views
 
 

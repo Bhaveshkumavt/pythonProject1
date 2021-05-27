@@ -35,8 +35,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'app1',
-    'registration',
+    # 'registration',
     'crispy_forms',
+    'website4.app1',
     'allauth',
     'allauth.account',
 ]                           #'auth_remember'
